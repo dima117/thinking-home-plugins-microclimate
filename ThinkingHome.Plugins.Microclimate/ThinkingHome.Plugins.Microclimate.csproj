@@ -34,6 +34,10 @@
       <HintPath>..\packages\ECM7Migrator.2.8.0.0\lib\net40\ECM7.Migrator.Framework.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="HidLibrary">
+      <HintPath>..\packages\NooLiteDotNet.2.0.0.0\lib\net40\HidLibrary.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Iesi.Collections">
       <HintPath>..\packages\Iesi.Collections.3.2.0.4000\lib\Net35\Iesi.Collections.dll</HintPath>
       <Private>False</Private>
@@ -60,6 +64,14 @@
     <Reference Include="System.Xml" />
     <Reference Include="ThinkingHome.Core.Plugins">
       <HintPath>..\packages\ThinkingHome.Core.Plugins.2.0.0.72\lib\net45\ThinkingHome.Core.Plugins.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ThinkingHome.NooLite">
+      <HintPath>..\packages\NooLiteDotNet.2.0.0.0\lib\net40\ThinkingHome.NooLite.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ThinkingHome.Plugins.NooLite">
+      <HintPath>..\packages\ThinkingHome.Plugins.NooLite.2.0.0.73\lib\net45\ThinkingHome.Plugins.NooLite.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>

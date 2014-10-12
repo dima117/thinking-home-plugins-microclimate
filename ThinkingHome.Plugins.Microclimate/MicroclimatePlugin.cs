@@ -3,29 +3,44 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NHibernate.Hql.Ast.ANTLR;
+using NHibernate.Linq;
 using ThinkingHome.Core.Plugins;
+using ThinkingHome.Plugins.Microclimate.Model;
+using ThinkingHome.Plugins.NooLite;
 
 namespace ThinkingHome.Plugins.Microclimate
 {
 	[Plugin]
 	public class MicroclimatePlugin : PluginBase
     {
-		public override void InitPlugin()
+		[OnMicroclimateDataReceived]
+		public void MicroclimateDataReceived(int channel, decimal temperature, int humidity)
 		{
-			Logger.Debug("init");
-			base.InitPlugin();
-		}
+			var now = DateTime.Now;
 
-		public override void StartPlugin()
-		{
-			Logger.Debug("start");
-			base.StartPlugin();
-		}
+			using (var session = Context.OpenSession())
+			{
+				var sensors = session
+					.Query<TemperatureSensor>()
+					.Where(s => s.Channel == channel)
+					.ToList();
 
-		public override void StopPlugin()
-		{
-			Logger.Debug("stop");
-			base.StopPlugin();
+				foreach (var sensor in sensors)
+				{
+					var data = new TemperatureData
+					{
+						CurrentDate = now,
+						Temperature = Convert.ToInt32(temperature),
+						Humidity = humidity,
+						Sensor = sensor
+					};
+
+					session.Save(data);
+				}
+
+				session.Flush();
+			}
 		}
     }
 }
