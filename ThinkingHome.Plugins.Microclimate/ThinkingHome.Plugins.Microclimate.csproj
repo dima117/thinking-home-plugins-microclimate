@@ -67,6 +67,7 @@
     <Compile Include="MicroclimatePlugin.cs" />
     <Compile Include="Migrations\Migration01_TemperatureSensor.cs" />
     <Compile Include="Migrations\Migration02_TemperatureData.cs" />
+    <Compile Include="Migrations\Migration03_TemperatureDataCurrentDate.cs" />
     <Compile Include="Model\TemperatureData.cs" />
     <Compile Include="Model\TemperatureSensor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
