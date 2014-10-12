@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ECM7.Migrator.Framework">
+      <HintPath>..\packages\ECM7Migrator.2.8.0.0\lib\net40\ECM7.Migrator.Framework.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Iesi.Collections">
       <HintPath>..\packages\Iesi.Collections.3.2.0.4000\lib\Net35\Iesi.Collections.dll</HintPath>
       <Private>False</Private>
@@ -61,11 +65,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MicroclimatePlugin.cs" />
+    <Compile Include="Migrations\Migration01_TemperatureSensor.cs" />
+    <Compile Include="Migrations\Migration02_TemperatureData.cs" />
+    <Compile Include="Model\TemperatureData.cs" />
+    <Compile Include="Model\TemperatureSensor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
