@@ -7,6 +7,7 @@
 
 		var sensorView = marionette.ItemView.extend({
 			template: _.template(tmplListItem),
+			className: 'microclimate-sensor-panel'
 		});
 
 		var sensorListView = marionette.CompositeView.extend({

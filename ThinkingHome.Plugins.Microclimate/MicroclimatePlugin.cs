@@ -17,8 +17,9 @@ namespace ThinkingHome.Plugins.Microclimate
 
 	[HttpResource("/webapp/microclimate/item-template.tpl", "ThinkingHome.Plugins.Microclimate.Resources.item-template.tpl")]
 	[HttpResource("/webapp/microclimate/list-template.tpl", "ThinkingHome.Plugins.Microclimate.Resources.list-template.tpl")]
+	[CssResource("/webapp/microclimate/index.css", "ThinkingHome.Plugins.Microclimate.Resources.index.css", AutoLoad = true)]
 	public class MicroclimatePlugin : PluginBase
-    {
+	{
 		public override void InitDbModel(ModelMapper mapper)
 		{
 			mapper.Class<TemperatureSensor>(cfg => cfg.Table("Microclimate_TemperatureSensor"));
@@ -115,5 +116,5 @@ namespace ThinkingHome.Plugins.Microclimate
 		}
 
 		#endregion
-    }
+	}
 }

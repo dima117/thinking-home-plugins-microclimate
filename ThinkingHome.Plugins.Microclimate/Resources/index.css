@@ -1,0 +1,17 @@
+﻿.microclimate-sensor-list {
+	padding-top: 16px;
+}
+
+.microclimate-sensor-panel {
+	padding: 8px;
+    background-color: #e2e2e2;
+    display: inline-block;
+    height: 100px;
+    margin: 0 8px 8px 0;
+    width: 240px;
+}
+
+.microclimate-sensor-data {
+	font-size: 48px;
+	color: #666666;
+}

@@ -8,9 +8,9 @@
 
 
 				var model = new backbone.Collection([
-					{ displayName: 'Спальня', t: 24 },
-					{ displayName: 'Зал', t: 25 },
-					{ displayName: 'Кухня', t: 28 }
+					{ displayName: 'Спальня', t: '+24' },
+					{ displayName: 'Зал', t: '+25' },
+					{ displayName: 'Кухня', t: '+28' }
 				]);
 
 				var view = new views.SensorList({
