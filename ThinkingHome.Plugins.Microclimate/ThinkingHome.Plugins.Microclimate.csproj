@@ -94,6 +94,10 @@
       <HintPath>..\packages\ThinkingHome.Plugins.NooLite.2.0.0.74\lib\net45\ThinkingHome.Plugins.NooLite.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="ThinkingHome.Plugins.WebUI">
+      <HintPath>..\packages\ThinkingHome.Plugins.WebUI.2.0.0.74\lib\net45\ThinkingHome.Plugins.WebUI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MicroclimatePlugin.cs" />
@@ -108,6 +112,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\index.js" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

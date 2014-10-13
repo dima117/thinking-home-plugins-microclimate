@@ -7,10 +7,12 @@ using ThinkingHome.Plugins.Listener.Api;
 using ThinkingHome.Plugins.Listener.Attributes;
 using ThinkingHome.Plugins.Microclimate.Model;
 using ThinkingHome.Plugins.NooLite;
+using ThinkingHome.Plugins.WebUI.Attributes;
 
 namespace ThinkingHome.Plugins.Microclimate
 {
 	[Plugin]
+	[AppSection("Microclimate", SectionType.Common, "/microclimate/index.js", "ThinkingHome.Plugins.Microclimate.Resources.index.js")]
 	public class MicroclimatePlugin : PluginBase
     {
 		public override void InitDbModel(ModelMapper mapper)
