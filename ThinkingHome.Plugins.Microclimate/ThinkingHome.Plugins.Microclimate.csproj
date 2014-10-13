@@ -110,8 +110,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <EmbeddedResource Include="Resources\item-template.tpl" />
+    <EmbeddedResource Include="Resources\list-template.tpl" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\index-view.js" />
+  </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\index.js" />
   </ItemGroup>

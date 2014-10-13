@@ -12,7 +12,11 @@ using ThinkingHome.Plugins.WebUI.Attributes;
 namespace ThinkingHome.Plugins.Microclimate
 {
 	[Plugin]
-	[AppSection("Microclimate", SectionType.Common, "/microclimate/index.js", "ThinkingHome.Plugins.Microclimate.Resources.index.js")]
+	[AppSection("Microclimate", SectionType.Common, "/webapp/microclimate/index.js", "ThinkingHome.Plugins.Microclimate.Resources.index.js")]
+	[JavaScriptResource("/webapp/microclimate/index-view.js", "ThinkingHome.Plugins.Microclimate.Resources.index-view.js")]
+
+	[HttpResource("/webapp/microclimate/item-template.tpl", "ThinkingHome.Plugins.Microclimate.Resources.item-template.tpl")]
+	[HttpResource("/webapp/microclimate/list-template.tpl", "ThinkingHome.Plugins.Microclimate.Resources.list-template.tpl")]
 	public class MicroclimatePlugin : PluginBase
     {
 		public override void InitDbModel(ModelMapper mapper)
