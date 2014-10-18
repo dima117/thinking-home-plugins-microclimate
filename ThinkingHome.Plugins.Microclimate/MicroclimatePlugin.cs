@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using NHibernate.Linq;
 using NHibernate.Mapping.ByCode;
@@ -20,6 +22,8 @@ namespace ThinkingHome.Plugins.Microclimate
 	[CssResource("/webapp/microclimate/index.css", "ThinkingHome.Plugins.Microclimate.Resources.index.css", AutoLoad = true)]
 	public class MicroclimatePlugin : PluginBase
 	{
+		public const int PERIOD = 2400;
+
 		public override void InitDbModel(ModelMapper mapper)
 		{
 			mapper.Class<TemperatureSensor>(cfg => cfg.Table("Microclimate_TemperatureSensor"));
@@ -88,30 +92,60 @@ namespace ThinkingHome.Plugins.Microclimate
 			}
 		}
 
-		[HttpCommand("/api/microclimate/data")]
-		public object GetSensorData(HttpRequestParams request)
+		[HttpCommand("/api/microclimate/sensors/details")]
+		public object GetSensorDetails(HttpRequestParams request)
 		{
 			var sensorId = request.GetRequiredGuid("sensorId");
+			var from = DateTime.Now.AddHours(-PERIOD);
+
+			using (var session = Context.OpenSession())
+			{
+				var sensor = session.Query<TemperatureSensor>().First(s => s.Id == sensorId);
+
+				var data = session.Query<TemperatureData>()
+					.Where(d => d.Sensor.Id == sensor.Id && d.CurrentDate > from)
+					.OrderByDescending(d => d.CurrentDate)
+					.ToList();
+
+				return CreateSensorDataModel(sensor, data);
+			}
+		}
+
+		[HttpCommand("/api/microclimate/sensors/list")]
+		public object GetSensorList(HttpRequestParams request)
+		{
+			var from = DateTime.Now.AddHours(-PERIOD);
 
 			using (var session = Context.OpenSession())
 			{
 				var data = session.Query<TemperatureData>()
-					.Where(d => d.Sensor.Id == sensorId)
-					.OrderByDescending(d => d.CurrentDate)
-					.Take(20)
+					.Where(d => d.CurrentDate > from)
 					.ToList();
 
-				return data.Select(CreateModel).ToList();
+				var sensors = session.Query<TemperatureSensor>().ToList();
+
+				var model = sensors
+					.GroupJoin(data, s => s.Id, d => d.Sensor.Id, (s, d) => new { s, d })
+					.Select(x => CreateSensorDataModel(x.s, x.d.OrderByDescending(d => d.CurrentDate).Take(1)))
+					.ToList();
+
+				return model;
 			}
 		}
 
-		private object CreateModel(TemperatureData arg)
+		private object CreateSensorDataModel(TemperatureSensor sensor, IEnumerable<TemperatureData> gr)
 		{
 			return new
 			{
-				d = arg.CurrentDate,
-				t = arg.Temperature,
-				h = arg.Humidity
+				id = sensor.Id,
+				displayName = sensor.DisplayName,
+				data = gr.Select(arg => 
+					new
+					{
+						d = arg.CurrentDate, 
+						t = arg.Temperature, 
+						h = arg.Humidity
+					}).ToArray()
 			};
 		}
 
