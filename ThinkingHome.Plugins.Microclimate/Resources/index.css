@@ -3,15 +3,19 @@
 }
 
 .microclimate-sensor-panel {
+	width: 240px;
+	height: 120px;
+	float: left;
+	margin: 0 8px 8px 0;
+	background-color: #e2e2e2;
 	padding: 8px;
-    background-color: #e2e2e2;
-    display: inline-block;
-    height: 100px;
-    margin: 0 8px 8px 0;
-    width: 240px;
 }
 
 .microclimate-sensor-data {
 	font-size: 48px;
 	color: #666666;
+}
+
+.microclimate-sensor-no-data {
+	color: #a52a2a;
 }

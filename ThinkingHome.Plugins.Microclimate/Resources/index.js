@@ -1,23 +1,23 @@
 ﻿define(
 	['app', 'marionette', 'backbone', 'underscore',
-		'webapp/microclimate/index-view'],
+		'webapp/microclimate/index-view',
+		'webapp/microclimate/index-model'
+	],
 	function (application, marionette, backbone, _, views) {
 
 		var module = {
 			start: function () {
 
+				var rq = application.request('query:microclimate:sensors');
 
-				var model = new backbone.Collection([
-					{ displayName: 'Спальня', t: '+24' },
-					{ displayName: 'Зал', t: '+25' },
-					{ displayName: 'Кухня', t: '+28' }
-				]);
+				$.when(rq).done(function (collection) {
 
-				var view = new views.SensorList({
-					collection: model
+					var view = new views.SensorList({
+						collection: collection
+					});
+
+					application.setContentView(view);
 				});
-
-				application.setContentView(view);
 			}
 		};
 		return module;

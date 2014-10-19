@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using NHibernate.Linq;
 using NHibernate.Mapping.ByCode;
@@ -16,6 +17,7 @@ namespace ThinkingHome.Plugins.Microclimate
 	[Plugin]
 	[AppSection("Microclimate", SectionType.Common, "/webapp/microclimate/index.js", "ThinkingHome.Plugins.Microclimate.Resources.index.js")]
 	[JavaScriptResource("/webapp/microclimate/index-view.js", "ThinkingHome.Plugins.Microclimate.Resources.index-view.js")]
+	[JavaScriptResource("/webapp/microclimate/index-model.js", "ThinkingHome.Plugins.Microclimate.Resources.index-model.js")]
 
 	[HttpResource("/webapp/microclimate/item-template.tpl", "ThinkingHome.Plugins.Microclimate.Resources.item-template.tpl")]
 	[HttpResource("/webapp/microclimate/list-template.tpl", "ThinkingHome.Plugins.Microclimate.Resources.list-template.tpl")]
@@ -139,14 +141,22 @@ namespace ThinkingHome.Plugins.Microclimate
 			{
 				id = sensor.Id,
 				displayName = sensor.DisplayName,
-				data = gr.Select(arg => 
+				data = gr.Select(arg =>
 					new
 					{
-						d = arg.CurrentDate, 
-						t = arg.Temperature, 
-						h = arg.Humidity
+						d = arg.CurrentDate,
+						t = arg.Temperature,
+						h = arg.Humidity,
+						dd = arg.CurrentDate.ToShortTimeString(),
+						dt = FormatTemperature(arg.Temperature),
+						dh = arg.Humidity + "%"
 					}).ToArray()
 			};
+		}
+
+		private string FormatTemperature(int t)
+		{
+			return t > 0 ? "+" + t : t.ToString(CultureInfo.InvariantCulture);
 		}
 
 		#endregion
