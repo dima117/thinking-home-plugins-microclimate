@@ -3,13 +3,13 @@
 	<%= displayName %>
 </div>
 
-<% if (current) { %>
+<% if (data) { %>
 
 		<div class="microclimate-sensor-data">
-			<%= current.dt %>
+			<%= data.dt %>
 		</div>
 		<div>
-			<%= current.dd %>
+			<%= data.dd %>
 		</div>
 <% } else { %>
 

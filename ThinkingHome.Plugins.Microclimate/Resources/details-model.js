@@ -3,15 +3,15 @@
 	function (application, marionette, backbone, _) {
 
 		var api = {
-			loadSensors: function() {
+			loadDetails: function (id) {
 
 				var defer = $.Deferred();
 
-				$.getJSON('/api/microclimate/sensors/list')
-					.done(function (items) {
+				$.getJSON('/api/microclimate/sensors/details', { id: id })
+					.done(function (data) {
 
-						var collection = new backbone.Collection(items);
-						defer.resolve(collection);
+						var model = new backbone.Model(data);
+						defer.resolve(model);
 					})
 					.fail(function() {
 
@@ -23,7 +23,7 @@
 		};
 
 		// requests
-		application.reqres.setHandler('query:microclimate:sensors', api.loadSensors);
+		application.reqres.setHandler('query:microclimate:details', api.loadDetails);
 
 		return api;
 	});

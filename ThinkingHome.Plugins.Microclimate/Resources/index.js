@@ -5,8 +5,13 @@
 	],
 	function (application, marionette, backbone, _, views) {
 
-		var module = {
-			start: function () {
+		var api = {
+			details: function(view) {
+
+				var id = view.model.get('id');
+				application.navigate('webapp/microclimate/details', id);
+			},
+			list: function() {
 
 				var rq = application.request('query:microclimate:sensors');
 
@@ -16,9 +21,14 @@
 						collection: collection
 					});
 
+					view.on('childview:show:sensor:details', api.details);
 					application.setContentView(view);
 				});
 			}
+		};
+
+		var module = {
+			start: api.list
 		};
 		return module;
 	});

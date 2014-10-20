@@ -19,6 +19,11 @@ namespace ThinkingHome.Plugins.Microclimate
 	[JavaScriptResource("/webapp/microclimate/index-view.js", "ThinkingHome.Plugins.Microclimate.Resources.index-view.js")]
 	[JavaScriptResource("/webapp/microclimate/index-model.js", "ThinkingHome.Plugins.Microclimate.Resources.index-model.js")]
 
+	[JavaScriptResource("/webapp/microclimate/details.js", "ThinkingHome.Plugins.Microclimate.Resources.details.js")]
+	[JavaScriptResource("/webapp/microclimate/details-view.js", "ThinkingHome.Plugins.Microclimate.Resources.details-view.js")]
+	[JavaScriptResource("/webapp/microclimate/details-model.js", "ThinkingHome.Plugins.Microclimate.Resources.details-model.js")]
+
+	[HttpResource("/webapp/microclimate/details-template.tpl", "ThinkingHome.Plugins.Microclimate.Resources.details-template.tpl")]
 	[HttpResource("/webapp/microclimate/item-template.tpl", "ThinkingHome.Plugins.Microclimate.Resources.item-template.tpl")]
 	[HttpResource("/webapp/microclimate/list-template.tpl", "ThinkingHome.Plugins.Microclimate.Resources.list-template.tpl")]
 	[CssResource("/webapp/microclimate/index.css", "ThinkingHome.Plugins.Microclimate.Resources.index.css", AutoLoad = true)]
@@ -97,7 +102,7 @@ namespace ThinkingHome.Plugins.Microclimate
 		[HttpCommand("/api/microclimate/sensors/details")]
 		public object GetSensorDetails(HttpRequestParams request)
 		{
-			var sensorId = request.GetRequiredGuid("sensorId");
+			var sensorId = request.GetRequiredGuid("id");
 			var from = DateTime.Now.AddHours(-PERIOD);
 
 			using (var session = Context.OpenSession())
@@ -109,7 +114,7 @@ namespace ThinkingHome.Plugins.Microclimate
 					.OrderByDescending(d => d.CurrentDate)
 					.ToList();
 
-				return CreateSensorDataModel(sensor, data);
+				return CreateSensorDetailsItemModel(sensor, data);
 			}
 		}
 
@@ -128,29 +133,43 @@ namespace ThinkingHome.Plugins.Microclimate
 
 				var model = sensors
 					.GroupJoin(data, s => s.Id, d => d.Sensor.Id, (s, d) => new { s, d })
-					.Select(x => CreateSensorDataModel(x.s, x.d.OrderByDescending(d => d.CurrentDate).Take(1)))
+					.Select(x => CreateSensorListItemModel(x.s, x.d.OrderByDescending(d => d.CurrentDate).FirstOrDefault()))
 					.ToList();
 
 				return model;
 			}
 		}
 
-		private object CreateSensorDataModel(TemperatureSensor sensor, IEnumerable<TemperatureData> gr)
+		private object CreateSensorDetailsItemModel(TemperatureSensor sensor, IEnumerable<TemperatureData> gr)
 		{
 			return new
 			{
 				id = sensor.Id,
 				displayName = sensor.DisplayName,
-				data = gr.Select(arg =>
-					new
-					{
-						d = arg.CurrentDate,
-						t = arg.Temperature,
-						h = arg.Humidity,
-						dd = arg.CurrentDate.ToShortTimeString(),
-						dt = FormatTemperature(arg.Temperature),
-						dh = arg.Humidity + "%"
-					}).ToArray()
+				data = gr.Select(CreateDataModel).ToArray()
+			};
+		}
+
+		private object CreateSensorListItemModel(TemperatureSensor sensor, TemperatureData gr)
+		{
+			return new
+			{
+				id = sensor.Id,
+				displayName = sensor.DisplayName,
+				data = CreateDataModel(gr)
+			};
+		}
+
+		private object CreateDataModel(TemperatureData data)
+		{
+			return new
+			{
+				d = data.CurrentDate,
+				t = data.Temperature,
+				h = data.Humidity,
+				dd = data.CurrentDate.ToShortTimeString(),
+				dt = FormatTemperature(data.Temperature),
+				dh = data.Humidity + "%"
 			};
 		}
 

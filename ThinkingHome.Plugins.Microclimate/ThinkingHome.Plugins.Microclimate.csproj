@@ -79,7 +79,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="ThinkingHome.Core.Plugins">
-      <HintPath>..\packages\ThinkingHome.Core.Plugins.2.0.0.74\lib\net45\ThinkingHome.Core.Plugins.dll</HintPath>
+      <HintPath>..\packages\ThinkingHome.Core.Plugins.2.0.0.75\lib\net45\ThinkingHome.Core.Plugins.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ThinkingHome.NooLite">
@@ -87,15 +87,15 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="ThinkingHome.Plugins.Listener">
-      <HintPath>..\packages\ThinkingHome.Plugins.Listener.2.0.0.74\lib\net45\ThinkingHome.Plugins.Listener.dll</HintPath>
+      <HintPath>..\packages\ThinkingHome.Plugins.Listener.2.0.0.75\lib\net45\ThinkingHome.Plugins.Listener.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ThinkingHome.Plugins.NooLite">
-      <HintPath>..\packages\ThinkingHome.Plugins.NooLite.2.0.0.74\lib\net45\ThinkingHome.Plugins.NooLite.dll</HintPath>
+      <HintPath>..\packages\ThinkingHome.Plugins.NooLite.2.0.0.75\lib\net45\ThinkingHome.Plugins.NooLite.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="ThinkingHome.Plugins.WebUI">
-      <HintPath>..\packages\ThinkingHome.Plugins.WebUI.2.0.0.74\lib\net45\ThinkingHome.Plugins.WebUI.dll</HintPath>
+      <HintPath>..\packages\ThinkingHome.Plugins.WebUI.2.0.0.75\lib\net45\ThinkingHome.Plugins.WebUI.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -112,6 +112,7 @@
     <None Include="packages.config" />
     <EmbeddedResource Include="Resources\item-template.tpl" />
     <EmbeddedResource Include="Resources\list-template.tpl" />
+    <EmbeddedResource Include="Resources\details-template.tpl" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\index-view.js" />
@@ -124,6 +125,15 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\index-model.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\details-view.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\details.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\details-model.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
