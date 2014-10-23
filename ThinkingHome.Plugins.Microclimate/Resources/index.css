@@ -19,3 +19,8 @@
 .microclimate-sensor-no-data {
 	color: #a52a2a;
 }
+
+.th-microclimate-chart {
+	height: 400px;
+	margin-top: 26px;
+}

@@ -22,6 +22,7 @@ namespace ThinkingHome.Plugins.Microclimate
 	[JavaScriptResource("/webapp/microclimate/details.js", "ThinkingHome.Plugins.Microclimate.Resources.details.js")]
 	[JavaScriptResource("/webapp/microclimate/details-view.js", "ThinkingHome.Plugins.Microclimate.Resources.details-view.js")]
 	[JavaScriptResource("/webapp/microclimate/details-model.js", "ThinkingHome.Plugins.Microclimate.Resources.details-model.js")]
+	[JavaScriptResource("/webapp/microclimate/details-chart.js", "ThinkingHome.Plugins.Microclimate.Resources.details-chart.js")]
 
 	[HttpResource("/webapp/microclimate/details-template.tpl", "ThinkingHome.Plugins.Microclimate.Resources.details-template.tpl")]
 	[HttpResource("/webapp/microclimate/item-template.tpl", "ThinkingHome.Plugins.Microclimate.Resources.item-template.tpl")]
@@ -29,7 +30,7 @@ namespace ThinkingHome.Plugins.Microclimate
 	[CssResource("/webapp/microclimate/index.css", "ThinkingHome.Plugins.Microclimate.Resources.index.css", AutoLoad = true)]
 	public class MicroclimatePlugin : PluginBase
 	{
-		public const int PERIOD = 2400;
+		public const int PERIOD = 24;	// in hours
 
 		public override void InitDbModel(ModelMapper mapper)
 		{
@@ -146,6 +147,7 @@ namespace ThinkingHome.Plugins.Microclimate
 			{
 				id = sensor.Id,
 				displayName = sensor.DisplayName,
+				showHumidity = sensor.ShowHumidity,
 				data = gr.Select(CreateDataModel).ToArray()
 			};
 		}
