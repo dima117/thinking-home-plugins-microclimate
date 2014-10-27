@@ -3,4 +3,4 @@
 	Return
 </a>
 <h1><%= displayName %></h1>
-<div class="js-chart th-microclimate-chart"></div>
+<div class="js-chart mc-sensor-details-chart"></div>

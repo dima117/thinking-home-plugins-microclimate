@@ -30,7 +30,7 @@ namespace ThinkingHome.Plugins.Microclimate
 	[CssResource("/webapp/microclimate/index.css", "ThinkingHome.Plugins.Microclimate.Resources.index.css", AutoLoad = true)]
 	public class MicroclimatePlugin : PluginBase
 	{
-		public const int PERIOD = 24;	// in hours
+		public const int PERIOD = 36;	// in hours
 
 		public override void InitDbModel(ModelMapper mapper)
 		{
@@ -104,7 +104,8 @@ namespace ThinkingHome.Plugins.Microclimate
 		public object GetSensorDetails(HttpRequestParams request)
 		{
 			var sensorId = request.GetRequiredGuid("id");
-			var from = DateTime.Now.AddHours(-PERIOD);
+			var now = DateTime.Now;
+			var from = now.AddHours(-PERIOD);
 
 			using (var session = Context.OpenSession())
 			{
@@ -115,14 +116,15 @@ namespace ThinkingHome.Plugins.Microclimate
 					.OrderByDescending(d => d.CurrentDate)
 					.ToList();
 
-				return CreateSensorDetailsItemModel(sensor, data);
+				return CreateSensorDetailsItemModel(sensor, data, now);
 			}
 		}
 
 		[HttpCommand("/api/microclimate/sensors/list")]
 		public object GetSensorList(HttpRequestParams request)
 		{
-			var from = DateTime.Now.AddHours(-PERIOD);
+			var now = DateTime.Now;
+			var from = now.AddHours(-PERIOD);
 
 			using (var session = Context.OpenSession())
 			{
@@ -134,45 +136,49 @@ namespace ThinkingHome.Plugins.Microclimate
 
 				var model = sensors
 					.GroupJoin(data, s => s.Id, d => d.Sensor.Id, (s, d) => new { s, d })
-					.Select(x => CreateSensorListItemModel(x.s, x.d.OrderByDescending(d => d.CurrentDate).FirstOrDefault()))
+					.Select(x => CreateSensorListItemModel(x.s, x.d.OrderByDescending(d => d.CurrentDate).FirstOrDefault(), now))
 					.ToList();
 
 				return model;
 			}
 		}
 
-		private object CreateSensorDetailsItemModel(TemperatureSensor sensor, IEnumerable<TemperatureData> gr)
+		private object CreateSensorDetailsItemModel(TemperatureSensor sensor, IEnumerable<TemperatureData> gr, DateTime now)
 		{
 			return new
 			{
 				id = sensor.Id,
 				displayName = sensor.DisplayName,
 				showHumidity = sensor.ShowHumidity,
-				data = gr.Select(CreateDataModel).ToArray()
+				data = gr.Select(d => CreateDataModel(d, now)).ToArray()
 			};
 		}
 
-		private object CreateSensorListItemModel(TemperatureSensor sensor, TemperatureData gr)
+		private object CreateSensorListItemModel(TemperatureSensor sensor, TemperatureData gr, DateTime now)
 		{
 			return new
 			{
 				id = sensor.Id,
 				displayName = sensor.DisplayName,
-				data = CreateDataModel(gr)
+				showHumidity = sensor.ShowHumidity,
+				data = CreateDataModel(gr, now)
 			};
 		}
 
-		private object CreateDataModel(TemperatureData data)
+		private object CreateDataModel(TemperatureData data, DateTime now)
 		{
-			return new
-			{
-				d = data.CurrentDate,
-				t = data.Temperature,
-				h = data.Humidity,
-				dd = data.CurrentDate.ToShortTimeString(),
-				dt = FormatTemperature(data.Temperature),
-				dh = data.Humidity + "%"
-			};
+			return data == null
+				? null
+				: new
+					{
+						d = data.CurrentDate,
+						t = data.Temperature,
+						h = data.Humidity,
+						dd = data.CurrentDate.ToShortTimeString(),
+						ddd = data.CurrentDate < now.AddDays(-1) ? data.CurrentDate.ToString("M") : null,
+						dt = FormatTemperature(data.Temperature),
+						dh = data.Humidity + "%"
+					};
 		}
 
 		private string FormatTemperature(int t)

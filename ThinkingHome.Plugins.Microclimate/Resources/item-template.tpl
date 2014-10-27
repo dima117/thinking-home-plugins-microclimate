@@ -1,20 +1,40 @@
-﻿<div class="microclimate-sensor-actions"></div>
-<div class="microclimate-sensor-name">
+﻿<div class="mc-sensor-actions"></div>
+<div class="mc-sensor-name">
 	<%= displayName %>
 </div>
 
 <% if (data) { %>
 
-		<div class="microclimate-sensor-data">
-			<%= data.dt %>
+<div class="mc-sensor-data">
+	<div class="mc-sensor-data-addon">
+		
+		<div>
+			<% if (showHumidity) { %>
+				h: <%= data.dh %>
+			<% } else { %>
+				&nbsp;
+			<% } %>
 		</div>
 		<div>
-			<%= data.dd %>
+			<strong>on <%= data.dd %></strong>
 		</div>
+		<% if (data.ddd) { %>
+		<div>
+			<small>
+				<%= data.ddd %>
+			</small>
+		</div>
+		<% } %>
+	</div>
+	<div class="mc-sensor-data-t">
+		<%= data.dt %>
+	</div>
+
+</div>
 <% } else { %>
 
-	<div class="microclimate-sensor-no-data">
-		The sensor has no data
-	</div>
+<div class="mc-sensor-no-data">
+	The sensor has no data
+</div>
 <% } %>
 
