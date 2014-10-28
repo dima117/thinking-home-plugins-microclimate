@@ -24,10 +24,16 @@ namespace ThinkingHome.Plugins.Microclimate
 	[JavaScriptResource("/webapp/microclimate/details-model.js", "ThinkingHome.Plugins.Microclimate.Resources.details-model.js")]
 	[JavaScriptResource("/webapp/microclimate/details-chart.js", "ThinkingHome.Plugins.Microclimate.Resources.details-chart.js")]
 
+	[AppSection("Microclimate sensors", SectionType.System, "/webapp/microclimate/settings.js", "ThinkingHome.Plugins.Microclimate.Resources.settings.js")]
+	[JavaScriptResource("/webapp/microclimate/settings-view.js", "ThinkingHome.Plugins.Microclimate.Resources.settings-view.js")]
+	[JavaScriptResource("/webapp/microclimate/settings-model.js", "ThinkingHome.Plugins.Microclimate.Resources.settings-model.js")]
+
 	[HttpResource("/webapp/microclimate/details-template.tpl", "ThinkingHome.Plugins.Microclimate.Resources.details-template.tpl")]
 	[HttpResource("/webapp/microclimate/item-template.tpl", "ThinkingHome.Plugins.Microclimate.Resources.item-template.tpl")]
 	[HttpResource("/webapp/microclimate/list-template.tpl", "ThinkingHome.Plugins.Microclimate.Resources.list-template.tpl")]
+	[HttpResource("/webapp/microclimate/settings.tpl", "ThinkingHome.Plugins.Microclimate.Resources.settings.tpl")]
 	[CssResource("/webapp/microclimate/index.css", "ThinkingHome.Plugins.Microclimate.Resources.index.css", AutoLoad = true)]
+	
 	public class MicroclimatePlugin : PluginBase
 	{
 		public const int PERIOD = 36;	// in hours
@@ -73,6 +79,28 @@ namespace ThinkingHome.Plugins.Microclimate
 		}
 
 		#region api
+
+		[HttpCommand("/api/microclimate/sensors/table")]
+		public object GetSensorTable(HttpRequestParams request)
+		{
+			using (var session = Context.OpenSession())
+			{
+				var sensors = session.Query<TemperatureSensor>().ToList();
+
+				var model = sensors
+					.Select(s => new
+					{
+						id = s.Id,
+						displayName = s.DisplayName,
+						channel = s.Channel,
+						showHumidity = s.ShowHumidity ? "Yes" : "No"
+					})
+					.ToList();
+
+				return model;
+			}
+		}
+
 
 		[HttpCommand("/api/microclimate/sensors/add")]
 		public object AddSensor(HttpRequestParams request)
