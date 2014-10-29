@@ -13,13 +13,24 @@
 				'<td class="col-md-1"><%= channel %></td>' +
 				'<td class="col-md-1"><%= showHumidity %></td>' +
 				'<td class="col-md-2"><a class="js-delete-sensor" href="#">delete</a></td>'),
-			tagName: 'tr'
+			tagName: 'tr',
+			triggers: {
+				'click .js-delete-sensor': 'delete:sensor'
+			}
 		});
 
 		var sensorTableView = marionette.CompositeView.extend({
 			template: _.template(tmplSettings),
 			childView: sensorTableRowView,
-			childViewContainer: 'tbody'
+			childViewContainer: 'tbody',
+			ui: {
+				displayName: '#tb-display-name',
+				channel: '#select-channel',
+				showHumidity: '#cb-show-humidity',
+			},
+			triggers: {
+				'click .js-add-sensor': 'add:sensor'
+			}
 		});
 
 		return {

@@ -101,30 +101,26 @@ namespace ThinkingHome.Plugins.Microclimate
 			}
 		}
 
-
-		[HttpCommand("/api/microclimate/sensors/add")]
-		public object AddSensor(HttpRequestParams request)
+		[HttpCommand("/api/microclimate/sensors/list")]
+		public object GetSensorList(HttpRequestParams request)
 		{
-			var channel = request.GetRequiredInt32("channel");
-			var displayName = request.GetRequiredString("displayName");
-			var showHumidity = request.GetRequiredBool("showHumidity");
-
-			Logger.Debug("add sensor: channel={0}; displayName={1}; showHumidity={2}", channel, displayName, showHumidity);
+			var now = DateTime.Now;
+			var from = now.AddHours(-PERIOD);
 
 			using (var session = Context.OpenSession())
 			{
-				var sensor = new TemperatureSensor
-				{
-					Id = Guid.NewGuid(),
-					Channel = channel,
-					DisplayName = displayName,
-					ShowHumidity = showHumidity
-				};
+				var data = session.Query<TemperatureData>()
+					.Where(d => d.CurrentDate > from)
+					.ToList();
 
-				session.Save(sensor);
-				session.Flush();
+				var sensors = session.Query<TemperatureSensor>().ToList();
 
-				return sensor.Id;
+				var model = sensors
+					.GroupJoin(data, s => s.Id, d => d.Sensor.Id, (s, d) => new { s, d })
+					.Select(x => CreateSensorListItemModel(x.s, x.d.OrderByDescending(d => d.CurrentDate).FirstOrDefault(), now))
+					.ToList();
+
+				return model;
 			}
 		}
 
@@ -148,28 +144,52 @@ namespace ThinkingHome.Plugins.Microclimate
 			}
 		}
 
-		[HttpCommand("/api/microclimate/sensors/list")]
-		public object GetSensorList(HttpRequestParams request)
+		[HttpCommand("/api/microclimate/sensors/add")]
+		public object AddSensor(HttpRequestParams request)
 		{
-			var now = DateTime.Now;
-			var from = now.AddHours(-PERIOD);
+			var displayName = request.GetRequiredString("displayName");
+			var channel = request.GetRequiredInt32("channel");
+			var showHumidity = request.GetRequiredBool("showHumidity");
+
+			Logger.Debug("add sensor: channel={0}; displayName={1}; showHumidity={2}", channel, displayName, showHumidity);
 
 			using (var session = Context.OpenSession())
 			{
-				var data = session.Query<TemperatureData>()
-					.Where(d => d.CurrentDate > from)
-					.ToList();
+				var sensor = new TemperatureSensor
+				{
+					Id = Guid.NewGuid(),
+					Channel = channel,
+					DisplayName = displayName,
+					ShowHumidity = showHumidity
+				};
 
-				var sensors = session.Query<TemperatureSensor>().ToList();
+				session.Save(sensor);
+				session.Flush();
 
-				var model = sensors
-					.GroupJoin(data, s => s.Id, d => d.Sensor.Id, (s, d) => new { s, d })
-					.Select(x => CreateSensorListItemModel(x.s, x.d.OrderByDescending(d => d.CurrentDate).FirstOrDefault(), now))
-					.ToList();
-
-				return model;
+				return sensor.Id;
 			}
 		}
+
+		[HttpCommand("/api/microclimate/sensors/delete")]
+		public object DeleteSensor(HttpRequestParams request)
+		{
+			var id = request.GetRequiredGuid("id");
+			Logger.Debug("delete sensor: id={0}", id);
+
+			using (var session = Context.OpenSession())
+			{
+				var sensor = session.Load<TemperatureSensor>(id);
+
+				session.Delete(sensor);
+				session.Flush();
+			}
+
+			return null;
+		}
+
+		#endregion
+
+		#region private
 
 		private object CreateSensorDetailsItemModel(TemperatureSensor sensor, IEnumerable<TemperatureData> gr, DateTime now)
 		{
@@ -198,15 +218,15 @@ namespace ThinkingHome.Plugins.Microclimate
 			return data == null
 				? null
 				: new
-					{
-						d = data.CurrentDate,
-						t = data.Temperature,
-						h = data.Humidity,
-						dd = data.CurrentDate.ToShortTimeString(),
-						ddd = data.CurrentDate < now.AddDays(-1) ? data.CurrentDate.ToString("M") : null,
-						dt = FormatTemperature(data.Temperature),
-						dh = data.Humidity + "%"
-					};
+				{
+					d = data.CurrentDate,
+					t = data.Temperature,
+					h = data.Humidity,
+					dd = data.CurrentDate.ToShortTimeString(),
+					ddd = data.CurrentDate < now.AddDays(-1) ? data.CurrentDate.ToString("M") : null,
+					dt = FormatTemperature(data.Temperature),
+					dh = data.Humidity + "%"
+				};
 		}
 
 		private string FormatTemperature(int t)

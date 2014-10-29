@@ -1,4 +1,7 @@
-﻿<div class="row">
+﻿<h1>
+	Microclimate sensors
+</h1>
+<div class="row">
 	<div class="col-md-12">
 		<form class="form-inline mc-form-add-sensor" role="form">
 			<div class="form-group">
@@ -6,8 +9,8 @@
 				<input id="tb-display-name" class="form-control" type="text" />
 			</div>
 			<div class="form-group">
-				<label for="sel-channel">Channel</label>
-				<select id="sel-channel" class="form-control">
+				<label for="select-channel">Channel</label>
+				<select id="select-channel" class="form-control">
 					<% for (var i = 0; i < 64; i++) {%>
 					<option>
 						<%= i %>
@@ -20,7 +23,7 @@
 					<input id="cb-show-humidity" type="checkbox" /> Show humidity
 				</label>
 			</div>
-			<input type="button" class="btn btn-primary" value="Add sensor" />
+			<input type="button" class="btn btn-primary js-add-sensor" value="Add sensor" />
 		</form>
 	</div>
 	<div class="col-md-12">

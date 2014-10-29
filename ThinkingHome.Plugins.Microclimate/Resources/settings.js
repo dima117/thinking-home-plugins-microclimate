@@ -1,14 +1,40 @@
 ﻿define(
-	[	'app', 'marionette', 'backbone', 'underscore',
+	['app', 'common', 'marionette', 'backbone', 'underscore',
 		'webapp/microclimate/settings-view',
 		'webapp/microclimate/settings-model'
 	],
-	function (application, marionette, backbone, _, views) {
+	function (application, commonModule, marionette, backbone, _, views) {
 
 		var api = {
-			showSettings: function() {
+			addSensor: function () {
 
-				var rq = application.request('query:microclimate:sensor-table');
+				var displayName = this.ui.displayName.val();
+				var channel = this.ui.channel.val();
+				var showHumidity = this.ui.showHumidity.prop('checked');
+
+				if (displayName) {
+
+					application
+						.request('cmd:microclimate:sensor:add', displayName, channel, showHumidity)
+						.done(api.loadSettings);
+
+				}
+			},
+			deleteSensor: function (childView) {
+				
+				var displayName = childView.model.get('displayName');
+
+				if (commonModule.utils.confirm('Delete the sensor "{0}" and all related data?', displayName)) {
+
+					var id = childView.model.get('id');
+
+					application.request('cmd:microclimate:sensor:delete', id)
+						.done(api.loadSettings);
+				}
+			},
+			loadSettings: function () {
+
+				var rq = application.request('query:microclimate:sensor:table');
 
 				$.when(rq).done(function (collection) {
 
@@ -16,14 +42,15 @@
 						collection: collection
 					});
 
-					//view.on('childview:show:sensor:details', api.details);
+					view.on('add:sensor', api.addSensor);
+					view.on('childview:delete:sensor', api.deleteSensor);
 					application.setContentView(view);
 				});
 			}
 		};
 
 		var module = {
-			start: api.showSettings
+			start: api.loadSettings
 		};
 		return module;
 	});
