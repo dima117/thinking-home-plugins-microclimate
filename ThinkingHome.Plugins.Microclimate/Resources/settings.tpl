@@ -34,6 +34,7 @@
 					<th>channel</th>
 					<th>show humidity</th>
 					<th></th>
+					<th></th>
 				</tr>
 			</thead>
 			<tbody></tbody>

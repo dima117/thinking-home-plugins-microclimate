@@ -20,6 +20,11 @@
 
 				}
 			},
+			addSensorTile: function (view) {
+
+				var sensorId = view.model.get('id');
+				application.addTile('ThinkingHome.Plugins.Microclimate.MicroclimateTileDefinition', { id: sensorId });
+			},
 			deleteSensor: function (childView) {
 				
 				var displayName = childView.model.get('displayName');
@@ -44,6 +49,7 @@
 
 					view.on('add:sensor', api.addSensor);
 					view.on('childview:delete:sensor', api.deleteSensor);
+					view.on('childview:add:sensor:tile', api.addSensorTile);
 					application.setContentView(view);
 				});
 			}
